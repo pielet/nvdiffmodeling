@@ -28,11 +28,11 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # nvidia-container-runtime
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
 
 # Default pyopengl to EGL for good headless rendering support
-ENV PYOPENGL_PLATFORM egl
+ENV PYOPENGL_PLATFORM=egl
 
 COPY docker/10_nvidia.json /usr/share/glvnd/egl_vendor.d/10_nvidia.json
 
@@ -41,11 +41,14 @@ ENV PYTHONPATH /tmp/usd/lib/python:$PYTHONPATH
 
 # install nvdiffrast
 RUN curl -L  https://github.com/NVlabs/nvdiffrast/archive/main.zip > /tmp/nvdiffrast.zip
-RUN mkdir -p /tmp/nvdiffrast && \
-    cd /tmp/nvdiffrast && unzip /tmp/nvdiffrast.zip
-RUN cd /tmp/nvdiffrast/nvdiffrast-main && pip install .
+RUN mkdir -p /workspace/src/nvdiffrast && \
+    cd /workspace/src/nvdiffrast && unzip /tmp/nvdiffrast.zip
+RUN cd /workspace/src/nvdiffrast/nvdiffrast-main && pip install .
 
 # additional libraries
 RUN pip install imageio imageio-ffmpeg
+
+WORKDIR /workspace/src/nvdiffmodeling
+COPY . .
 
 
